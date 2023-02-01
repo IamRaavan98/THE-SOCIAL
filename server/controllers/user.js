@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 //register
 exports.register = async (req, res) => {
   try {
+
+
     if (!req.body.username || !req.body.password || !req.body.email) {
       return res.status(404).send("Please provide email,username,password");
     }
@@ -19,7 +21,7 @@ exports.register = async (req, res) => {
 
     //store data in DB
     const newUser = await new Usermodel({
-      user: req.body.username,
+      username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
@@ -43,18 +45,20 @@ exports.login = async (req, res) => {
     //collected information from frontend
     const {email, password} = req.body
     //validate
-    if (!(email && password)) {
-        res.status(401).send("email and password is required")
+    if (!email || !password) {
+      return  res.status(401).send("email and password is required")
     }
   
     //check user in database
     const user = await Usermodel.findOne({email})
     //if user does not exists - assignment
     //match the password
-    if(!user){
-    return res.sendStatus(400).send("email or password is incorrect")
+
+    if(user === null){
+     
+    return res.status(401).send("email or password is incorrect")
     }
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (await bcrypt.compare(password, user.password)) {
         const token = jwt.sign({id: user._id, email}, process.env.SECRET_KEY, {expiresIn: '2h'})
         user.password = undefined
         user.token = token
@@ -70,49 +74,17 @@ exports.login = async (req, res) => {
         })
 
     }
-    //create token and send
+    else{
+      return res.status(400).send("password is incorrect")
+    }
   
 } catch (error) {
-    console.log(error);
+   return res.status(500).json({
+      success:false,
+      message:error.message
+    })
 }
- 
-  // try {
-  //   const { email, password } = req.body;
-  //   const user = await Usermodel.findOne({ email });
 
-  //   if (!user) {
-  //     throw new Error("User not found");
-  //   } else {
-  //     await bcrypt.compare(password, user.password);
-
-  //     const token = jwt.sign({ id: user._id, email }, process.env.SECRET_KEY, {
-  //       expiresIn: "2h",
-  //     });
-  //     user.token = token;
-  //     user.password = undefined;
-  //     // res.status(200).json(user);
-
-  //     // if you want to use cookies
-      
-
-  //     const options = {
-  //       expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-  //       domain: 'http://localhost:3000',
-  //       httpOnly: true,
-  //     };
-  //     res.status(200).cookie("token", token, options).json({
-  //       success: true,
-  //       token,
-  //       user,
-  //     });
-   
-  //   }
-
-  //   // res.status(400).send("email or password is incorrect");
-  // } catch (error) {
-  //   res.send(error.message);
-  //   // console.log(error);
-  // }
 };
 
 
@@ -127,6 +99,7 @@ exports.logout = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
 exports.updatePassword = async (req, res) => {
   const user = await Usermodel.findOne({ _id: req.params.id });
 
@@ -181,6 +154,7 @@ exports.getUser = async (req, res) => {
       return res.status(404).send("User id not found in params");
     }
     const user = await Usermodel.findById(req.params.id);
+    
     const { password, updatedAt, ...other } = user._doc;
     res.status(200).json(other);
   } catch (error) {
@@ -201,9 +175,9 @@ exports.follow = async (req, res) => {
         return res.status(400).send("you cant follow yourself")
       }
      
-      if (!user.followers.includes(currentUser._id)) {
+      if (!currentUser.followings.includes(user._id)) {
+        await currentUser.updateOne({ $push: { followings: user._id } });
         await user.updateOne({ $push: { followers: currentUser._id } });
-        await currentUser.updateOne({ $push: { followings: currentUser._id } });
         res.status(200).json("user has been followed");
       } else {
         res.status(403).json("you already follow this user");

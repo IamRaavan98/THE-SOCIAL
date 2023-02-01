@@ -5,10 +5,11 @@ const Postmodel = require("../models/Postmodel")
 // 
 exports.makeAPost = async (req,res)=>{
    req.body.userid = req.user._id
-  const newPost = new Postmodel(req.body)
-  try {
+
+   try {
+    const newPost = new Postmodel(req.body)
     const savedPost = await newPost.save()
-    res.status(200).json(savedPost)
+   return res.status(200).json(savedPost)
   } catch (error) {
     res.status(500).json(error.message)
   }
@@ -82,7 +83,7 @@ try {
   })
 }
 } 
-
+// 
 // get a post
 // here id in params is of a perticular post we want
 exports.getPost = async(req,res)=>{
@@ -114,7 +115,8 @@ exports.timelinePosts = async(req,res)=>{
         req.user.followings.map((friendsId)=>{
        return  Postmodel.find({userid:friendsId})
       }))
-      res.status(200).json(currentUserPosts.concat(...friendPosts))
+   
+      res.status(200).json(friendPosts)
   } catch (error) {
     res.status(500).json({
       success:false,
@@ -122,3 +124,34 @@ exports.timelinePosts = async(req,res)=>{
     })
   }
 }
+
+
+//userAllPosts this gives the post of any user we clicked on and there id is sent through query
+exports.userAllPosts = async(req,res)=>{
+  try {
+    const {username,_id} = req.query
+    
+      const currentUserPosts = await Postmodel.find({userid:_id})
+      
+      if(currentUserPosts.length>0){
+       return res.status(200).json({
+          success:true,
+          message:currentUserPosts
+        })
+      }
+      else{
+        return res.status(404).json({
+          success:true,
+          message:"no post found"
+        })
+      }
+  } catch (error) {
+    res.status(500).json({
+      success:false,
+      message:error.message
+    })
+  }
+}
+
+
+

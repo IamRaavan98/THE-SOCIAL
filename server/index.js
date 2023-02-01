@@ -9,8 +9,9 @@
     const postRoutes = require("./routes/post");
     const cors = require("cors");
     const cookieParser = require("cookie-parser");
+    const fileUpload = require("express-fileupload");
 
-
+    
     // middleware
     app.use(express.json())
     app.use(helmet())
@@ -28,6 +29,8 @@
     // middleware
     app.use(cookieParser());
     app.use(express.json());
+    app.use(fileUpload());
+
     app.use(express.urlencoded({ extended: true }));
     app.use(cors({
         credentials: true,

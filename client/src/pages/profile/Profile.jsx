@@ -3,8 +3,18 @@ import Topbar from "../../components/topbar/Topbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Feed from "../../components/feed/Feed";
 import Rightbar from "../../components/rightbar/Rightbar";
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export default function Profile() {
+
+  const [searchParams, setSearchParams] = useSearchParams()
+   const username = searchParams.get('username')
+   const _id = searchParams.get('_id')
+  
+
+  
+ 
   return (
     <>
       <Topbar />
@@ -25,12 +35,12 @@ export default function Profile() {
               />
             </div>
             <div className="profileInfo">
-                <h4 className="profileInfoName">Safak Kocaoglu</h4>
+                <h4 className="profileInfoName">{username}</h4>
                 <span className="profileInfoDesc">Hello my friends!</span>
             </div>
           </div>
           <div className="profileRightBottom">
-            <Feed />
+            <Feed  username = {username} _id={_id}/>
             <Rightbar profile/>
           </div>
         </div>

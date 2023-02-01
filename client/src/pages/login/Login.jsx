@@ -1,106 +1,16 @@
-// import axios from "axios";
-// import { useState } from "react";
-// import { Navigate, redirect } from "react-router-dom";
-// import "./login.css";
 
-// export default function Login() {
-//   const [email, setEmail] = useState();
-//   const [password, setPassword] = useState();
-//   const [login,setLogin] = useState(null)
-
-//   const handleSubmit = async(e) => {
-//     e.preventDefault();
-//     //checking email and password
-
-//   try {
-//     axios.defaults.withCredentials = true
-//     const res = await axios.post(`api/users/login`,{
-//       email: "Rohanagrawal1798@gmail.com",
-//       password: "123456",
-//     })
-//     console.log(res);
-//       if(res){
-//         console.log(res);
-//         redirect("/profile")
-
-//       }
-//   }   
-//   catch (error) {
-//     console.log(error.response);
-//   }
-
-//   };
-//   return (
-//     <div className="login">
-//       <div className="loginWrapper">
-//         <div className="loginLeft">
-//           <h3 className="loginLogo">Lamasocial</h3>
-//           <span className="loginDesc">
-//             Connect with friends and the world around you on Lamasocial.
-//           </span>
-//         </div>
-//         <div className="loginRight">
-//           <div className="loginBox">
-//             <form onSubmit={handleSubmit}>
-//               <label htmlFor="email">
-//                 <input 
-//                   id="email" 
-//                   placeholder="Email" 
-//                   className="loginInput"
-//                   value={email} 
-//                   onChange={e=>setEmail(e.target.value)}
-//                   />
-//               </label>
-
-//               <label htmlFor="password">
-//                 <input
-//                   id="password"
-//                   type="password"
-//                   placeholder="Password"
-//                   className="loginInput"
-//                   value={password}
-//                   onChange={e=>setPassword(e.target.value)}
-//                 />
-//               </label>
-//               <button type="submit" className="loginButton">
-//                   Log In
-//                      </button>
-
-             
-//             </form>
-//             <span className="loginForgot">Forgot Password?</span>
-//             <button className="loginRegisterButton">
-//               Create 
-//               a New Account
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-// import Cookies from 'universal-cookie';
+import  { useContext } from "react";
+import Authcontext from "../../context/Authcontext";
+
+//context api call
+
+
+
 const Login = () => {
+  const {dispatch} = useContext(Authcontext)
 
   const [email, setEmail] = useState(" ");
   const [id, setId] = useState();
@@ -111,7 +21,10 @@ const Login = () => {
   //Submit
   // const navigate = useNavigate(); Not used
 
-  const handleSubmit = async (e) => {
+
+
+
+  const handleSubmit = async (e,props) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -123,17 +36,16 @@ const Login = () => {
           email: email,
           password: password,
         });
-        console.log(res);
+          console.log(res);
+
+
         if (typeof res.data != "string" && res) {
           setId(res.data.user._id);
-          
-          // const options = {
-          //   expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-          // };
-          // const cookies = new Cookies();
-          // cookies.set("token", res.data.token, options)
-
-          //  navigate(`/home?id=${res.data.user._id}`, { state: res.config.data });
+          console.log("from login");
+           dispatch({
+            data:res.data
+           })
+   
         } else {
           setWarning(res.data);
           setEmail(" ");
@@ -141,6 +53,7 @@ const Login = () => {
         }
       } catch (error) {
         console.log(error.message);
+        console.log(error.response.data&&error.response.data);
       }
     }
   };
