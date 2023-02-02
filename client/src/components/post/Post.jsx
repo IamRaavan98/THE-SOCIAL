@@ -1,13 +1,14 @@
 import { MoreVert } from "@mui/icons-material";
-import { useState,useEffect } from "react";
+import { useState,useEffect} from "react";
 import "./post.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
 
 
 
-export default function Post({ post }) {
-  // console.log(post);
+export default function Post({fetchtimelinePosts, post }) {
+  const inputOne = useRef()
   const [like, setLike] = useState(post.like);
   const [isLiked, setIsLiked] = useState(false);
   const [followingPost, setFollowingPost] = useState()
@@ -17,6 +18,7 @@ export default function Post({ post }) {
   };
 
   const Allfollowingsdata = async () => {
+
     if(post.length){
      try {
       if(post[0].userid){
@@ -38,6 +40,23 @@ export default function Post({ post }) {
     Allfollowingsdata();
   },[]);
   
+ 
+  const handlePostDelete = async(post) => {
+  try {
+    console.log(post._id);
+    if(!post._id){
+      return 
+    }
+    const res = await axios.delete(`/api/posts/delete/${post._id}`)
+    console.log(res);
+    fetchtimelinePosts()
+    
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+  }
+
   
   return (
     <>
@@ -46,8 +65,9 @@ export default function Post({ post }) {
         post.map((post) => (
           <div className="post">
             <div className="postWrapper">
-              <div className="postTop">
-                <div className="postTopLeft">
+              <div  className="postTop">
+             
+                <div  className="postTopLeft">
    
 
                   <Link to={`/profile?username=${followingPost&&followingPost.username}&_id=${followingPost&&followingPost._id}`}>
@@ -66,14 +86,23 @@ export default function Post({ post }) {
                   </Link>
                   <span className="postDate">{post.createdAt.slice(11,19)} on {(post.createdAt.slice(0,10))}</span>
                 </div>
-                <div className="postTopRight">
-                  <MoreVert />
+                <div  className="postTopRight flex flex-col">
+                 
+                 <div  className="">
+                  <button onClick={()=>handlePostDelete(post)}
+                  className=" "
+                  >Delete</button>
+                  
+                  </div> 
+              
                 </div>
               </div>
               <div className="postCenter">
-                <span className="postText">{post.description}</span>
-                <img className="postImg" src={post.photo} alt="" />
+             
+                <span className="postText">{post.description?(post.description):(" ")}</span>
+                <img className="postImg" src={post.img&&post.img.secure_url} alt="" />
               </div>
+             
               <div className="postBottom">
                 <div className="postBottomLeft space-x-2">
                   <img

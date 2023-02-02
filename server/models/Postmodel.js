@@ -5,13 +5,16 @@ const PostSchmea = new mongoose.Schema(
      userid:{
         type:String,
         required:true,
+        default:" ",
      },
      description:{
         type:String,
         max:500,
+        default:" ",
      },
      img:{
-        type:String,
+        id:String,
+        secure_url:String,
      },
      likes:{
         type:Array,

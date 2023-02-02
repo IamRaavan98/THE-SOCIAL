@@ -1,17 +1,21 @@
 const express = require("express");
 const postRoutes = express.Router();
 const { checkLoginOrNot } = require("../middleware/auth");
-const { makeAPost, 
-        update,
+const { update,
         deletePost,
         likePost, 
         getPost,
         timelinePosts,
-        userAllPosts} = require("../controllers/post")
+        userAllPosts,
+        addProfilePicture,
+        addPosts,
+        descriptionPost} = require("../controllers/post")
 
-postRoutes.post("/makeAPost",checkLoginOrNot,makeAPost)
+postRoutes.post("/addProfilePicture",checkLoginOrNot,addProfilePicture)
+postRoutes.post("/addPosts",checkLoginOrNot,addPosts)
+postRoutes.post("/descriptionPost",checkLoginOrNot,descriptionPost)
 postRoutes.get("/:id/update",checkLoginOrNot,update)
-postRoutes.get("/:id/delete",checkLoginOrNot,deletePost)
+postRoutes.delete("/delete/:id",checkLoginOrNot,deletePost)
 postRoutes.put("/:id/LikePost",checkLoginOrNot,likePost)
 postRoutes.get("/:id/getPost",checkLoginOrNot,getPost)
 postRoutes.get("/timelinePosts",checkLoginOrNot,timelinePosts)

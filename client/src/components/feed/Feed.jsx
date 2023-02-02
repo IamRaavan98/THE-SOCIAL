@@ -5,13 +5,14 @@ import Post from "../post/Post";
 import "./feed.css";
 
 export default function Feed({ username, _id }) {
+  
   // console.log("username",username);
   const [posts, setPosts] = useState([]);
   const [postsforProfile, setPostsForProfile] = useState([]);
 
   useEffect(() => {
     fetchtimelinePosts();
-  }, []);
+  }, [username]);
 
   const fetchtimelinePosts = async () => {
     try {
@@ -21,6 +22,14 @@ export default function Feed({ username, _id }) {
         const res = await axios.get(`/api/posts/timelinePosts`);
         // console.log(res);
         setPosts(res.data);
+      
+        setPosts(
+          res.data.sort((p1, p2) => {
+            return new Date(p2[0]&&p2[0].createdAt) - new Date(p1[0]&&p1[0].createdAt);
+          })
+        );
+
+
       } else {
         const res = await axios.get(
           `/api/posts/userAllPosts?username=${username}&_id=${_id}`
@@ -29,7 +38,12 @@ export default function Feed({ username, _id }) {
         
         if (res.data.message.length > 0) {
           //we are sending data inside []array as when timeline post work it have array of array as one user its all photos then another user its photos.. but here we only have one user photos so our post component is made in such a way that it handle arrays of arrays
-          setPosts([res.data.message]);
+        setPosts([
+            res.data.message.sort((p1, p2) => {
+              return new Date(p2.createdAt) - new Date(p1.createdAt);
+            })]
+          );
+          
           //  console.log(res);
         }
       }
@@ -46,7 +60,7 @@ export default function Feed({ username, _id }) {
 
         {posts &&
           posts.map((p) => (
-            <Post key={p.length > 0 ? p[0]._id : p.id} post={p} />
+            <Post fetchtimelinePosts={fetchtimelinePosts} key={p.length > 0 ? p[0]._id : p.id} post={p} />
           ))}
       </div>
     </div>

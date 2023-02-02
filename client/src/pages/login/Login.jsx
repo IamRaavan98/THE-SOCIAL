@@ -1,7 +1,7 @@
 
 import axios from "axios";
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, Navigate } from "react-router-dom";
 import  { useContext } from "react";
 import Authcontext from "../../context/Authcontext";
 
@@ -12,9 +12,9 @@ import Authcontext from "../../context/Authcontext";
 const Login = () => {
   const {dispatch} = useContext(Authcontext)
 
-  const [email, setEmail] = useState(" ");
+  const [email, setEmail] = useState("rohanagrawal1798@gmail.com");
   const [id, setId] = useState();
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("123456");
   const [mandatoryfields, setMandatoryFields] = useState(false);
   const [warning, setWarning] = useState("");
 
@@ -36,12 +36,12 @@ const Login = () => {
           email: email,
           password: password,
         });
-          console.log(res);
+          // console.log(res);
 
 
         if (typeof res.data != "string" && res) {
           setId(res.data.user._id);
-          console.log("from login");
+        
            dispatch({
             data:res.data
            })
@@ -144,11 +144,15 @@ const Login = () => {
                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 {id != null ? (
-                  <Link to={`/home`}>Login</Link>
+                  // <Link to={`/home?_id=${id&&id}`}>Login</Link>
+                  <Navigate to={`/home?_id=${id&&id}`} />
                 ) : (
                   <p>LOGIN</p>
                 )}
               </button>
+
+
+              
             </div>
           </form>
         </div>
