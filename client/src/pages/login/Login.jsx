@@ -1,59 +1,56 @@
-
 import axios from "axios";
 import { useState } from "react";
 import { NavLink, Link, Navigate } from "react-router-dom";
-import  { useContext } from "react";
+import { useContext } from "react";
 import Authcontext from "../../context/Authcontext";
 
 //context api call
 
-
-
 const Login = () => {
-  const {dispatch} = useContext(Authcontext)
+  const { dispatch } = useContext(Authcontext);
 
-  const [email, setEmail] = useState("rohanagrawal1798@gmail.com");
+  const [email, setEmail] = useState();
   const [id, setId] = useState();
-  const [password, setPassword] = useState("123456");
+  const [password, setPassword] = useState();
   const [mandatoryfields, setMandatoryFields] = useState(false);
   const [warning, setWarning] = useState("");
 
   //Submit
   // const navigate = useNavigate(); Not used
 
-
-
-
-  const handleSubmit = async (e,props) => {
+  const handleSubmit = async (e, props) => {
     e.preventDefault();
 
     if (!email || !password) {
       setMandatoryFields("All fields are mandatory");
     } else {
       try {
-    axios.defaults.withCredentials = true
+        axios.defaults.withCredentials = true;
         const res = await axios.post("/api/users/login", {
           email: email,
           password: password,
         });
-          // console.log(res);
-
+        // console.log(res);
 
         if (typeof res.data != "string" && res) {
           setId(res.data.user._id);
-        
-           dispatch({
-            data:res.data
-           })
-   
+
+          dispatch({
+            data: res.data,
+          });
+          console.log(res.data);
         } else {
           setWarning(res.data);
-          setEmail(" ");
-          setPassword(" ");
+          setEmail("");
+          setPassword("");
         }
       } catch (error) {
+        setEmail("");
+        setPassword("");
         console.log(error.message);
-        console.log(error.response.data&&error.response.data);
+        console.log(error.response.data && error.response.data);
+        if (error.response.data)
+          setWarning("You are not registered Please register");
       }
     }
   };
@@ -71,9 +68,9 @@ const Login = () => {
             <h2 className="mt-6 text-center text-xl font-bold tracking-tight text-gray-900">
               WELCOME, Please login
             </h2>
-            <NavLink className="btn btn-primary" to={"/signup"}>
-              Signup
-            </NavLink>
+            <Link className="btn btn-primary" to={"/Register"}>
+              <button  className="group relative flex w-1/3 justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Register</button>
+            </Link>
           </div>
 
           {/* for registerd users */}
@@ -105,7 +102,7 @@ const Login = () => {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type="text"
                   autoComplete="current-password"
                   className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                   value={password}
@@ -145,14 +142,11 @@ const Login = () => {
               >
                 {id != null ? (
                   // <Link to={`/home?_id=${id&&id}`}>Login</Link>
-                  <Navigate to={`/home?_id=${id&&id}`} />
+                  <Navigate to={`/home?_id=${id && id}`} />
                 ) : (
                   <p>LOGIN</p>
                 )}
               </button>
-
-
-              
             </div>
           </form>
         </div>
@@ -162,8 +156,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
-

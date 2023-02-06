@@ -1,8 +1,9 @@
 // import { Person, Search } from "@mui/icons-material";
 import "./topbar.css";
+import { CircularProgress } from "@mui/material";
 import { Search, Person, Chat, Notifications } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import Authcontext from "../../context/Authcontext";
 import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -13,34 +14,93 @@ import axios from "axios";
 export default function Topbar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const username = searchParams.get("username");
-  
   //using context
-  const { data } = useContext(Authcontext);
+  const [userData, setUserData] = useState(useContext(Authcontext).data.user);
+
+  const { dispatch } = useContext(Authcontext);
+ 
+  const [searchArray1,setSearchArray1] = useState([])
+  const [searchArray2,setSearchArray2] = useState([])
+
+  const [imageUplaodLoading, setImageUploadloading] = useState(0);
+  const [searchInput, setSearchInput] = useState([]);
+  const [profilebar, setProfileBar] = useState("none");
+
   
-  const [bgColorchangeHome, setBgColorChangeHome] = useState();
-  const [bgColorchangetimeline, setBgColorChangeTimeline] = useState();
-   const [profilebar, setProfileBar] = useState('none')
-
-  const handleLogout = async()=>{
+  const handleLogout = async () => {
     try {
-      const res  = await axios.get(`/api/users/logout`);
-
-      
+      const res = await axios.get(`/api/users/logout`);
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
- const handleProfile  = ()=>{
-  if(profilebar === 'none'){
-    setProfileBar('flex')
-  }
-  else{
-    setProfileBar('none')
+  const handleProfilepicture = () => {
+    if (profilebar === "none") {
+      setProfileBar("flex");
+    } else {
+      setProfileBar("none");
+    }
+  };
 
-  }
+  useEffect(()=>{
+
+  })
+
+  // uplaod a picture
+  const handleProfilePictureUpload = async (e) => {
+    setImageUploadloading(1);
+    e.preventDefault();
+    console.log(e.target.files[0]);
+    if (e.target.files[0]) {
+      try {
+        const formData = new FormData();
+        formData.append("photos", e.target.files[0]);
+        const res = await axios.post(`/api/posts/addProfilePicture`, formData, {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        });
+        if (res.status === 200) {
+          setImageUploadloading(0);
+
+          setUserData(res.data.user);
+          // as we are fetching data from context api and there it store its data in local host so we need to update it manually or it will update as on login
+          dispatch({
+            data: res.data,
+          });
+        }
+      } catch (error) {
+        setImageUploadloading(0);
+        console.log(error.message);
+        console.log(error);
+      }
+    } else {
+      setImageUploadloading(0);
+      window.alert("image not found");
+    }
+  };
+
+  // all user name list
+  const handleFriendList = async () => {
+   
+    try {
+      const res = await axios.get(`/api/users/AlluserList`);
+      console.log(res.data.message);
+      // setSearchArray1(res.data.message.map((r)=> console.log(r.username)))
+      setSearchArray1(res.data.message)
+    } catch (error) {
+      console.log(error.message);
+    }
+  
+
  }
 
+ const handleSearch = (e)=>{
+  e.preventDefault()
+      
+    
+ }
 
   return (
     <div className="topbarContainer">
@@ -49,11 +109,22 @@ export default function Topbar() {
       </div>
       <div className="topbarCenter">
         <div className="searchbar">
-          <Search className="searchIcon" />
-          <input
-            placeholder="Search for friend, post or video"
-            className="searchInput"
-          />
+          <form onSubmit={handleSearch}>
+
+          <label htmlFor="search">
+            <button id="search" type="submit">
+            <Search  className="searchIcon" />
+            </button>
+            <input
+              type="text"
+              onChange = {(e)=>setSearchInput(e.target.value)}
+              onClick = {handleFriendList}
+              id="search"
+              placeholder="Search for friend, post or video"
+              className="searchInput"
+              />
+          </label>
+        </form>
         </div>
       </div>
       <div className="flex flex-row topbarRight">
@@ -61,22 +132,17 @@ export default function Topbar() {
           <span className="topbarLink">
             <button>
               <Link
-                className={`bg-${bgColorchangeHome}`}
-                onClick={()=>setBgColorChangeHome("black")}
                 to={`/profile?username=${
-                  data.user.username && data.user.username
-                }&_id=${data.user && data.user._id}`}
+                  userData.username && userData.username
+                }&_id=${userData._id && userData._id}`}
               >
-                HomePage
+                My Profile
               </Link>
             </button>
           </span>
 
           <span className="topbarLink">
-            <Link
-             className={`bg-${bgColorchangetimeline}`}
-             onClick={()=>setBgColorChangeTimeline("black")}
-              to="/home">Timeline</Link>
+            <Link to="/home">Timeline</Link>
           </span>
         </div>
         <div className="topbarIcons">
@@ -94,20 +160,51 @@ export default function Topbar() {
           </div>
         </div>
 
-<div onClick={handleProfile} className="flex flex-col ">
+        <div onClick={handleProfilepicture} className="flex flex-col ">
+          {imageUplaodLoading ? (
+            <CircularProgress />
+          ) : (
+            <img
+              src={
+                userData.profilePicture.secure_url
+                  ? userData.profilePicture.secure_url
+                  : require("../../assets/white_profile_picture.png")
+              }
+              alt=""
+              className="topbarImg"
+            />
+          )}
 
-        <img  src="https://res.cloudinary.com/dumda0jde/image/upload/v1675342630/users/vv769whayfazwztscvd9.jpg" alt="" className="topbarImg" />
-       
-          
-       <div style={{display:`${profilebar}`}} className="fixed top-[50px] right-[20px] flex flex-col bg-[#1877F2] items-start ">
-         <button className="px-4 py-1">Change Profile</button>
-         <button className="px-4 py-1">Admin login</button>
-         <Link  className="px-4 py-1" onClick={handleLogout} to="/">Logout</Link>
-        
+          <div
+            onClick={handleProfilepicture}
+            style={{ display: `${profilebar}` }}
+            className="fixed top-[50px] right-[20px] flex flex-col bg-[#1877F2] items-start "
+          >
+            <label className="px-4 py-1" htmlFor="posts">
+              <span className="cursor-pointer  hover:bg-slate-500">
+                Change Profile
+              </span>
+              <input
+                style={{ display: "none" }}
+                type="file"
+                id="posts"
+                accept=".png,.jpeg,.jpg"
+                onChange={handleProfilePictureUpload}
+              />
+            </label>
+
+            <button className="px-4 py-1 hover:bg-slate-500">
+              Admin login
+            </button>
+            <Link
+              className="px-4 py-1 hover:bg-slate-500"
+              onClick={handleLogout}
+              to="/"
+            >
+              Logout
+            </Link>
+          </div>
         </div>
-</div>
-
-        
       </div>
     </div>
   );

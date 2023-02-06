@@ -2,7 +2,6 @@ const AuthReducer=(state,action)=>{
   // console.log("from authreducer",state,action);
   return{
     data:action.data,
-    data1:action.data
   }
 }
 export default AuthReducer

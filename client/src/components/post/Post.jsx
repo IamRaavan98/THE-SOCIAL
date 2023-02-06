@@ -7,7 +7,7 @@ import { useRef } from "react";
 
 
 
-export default function Post({fetchtimelinePosts, post }) {
+export default function Post({fetchtimelinePosts, post}) {
   const inputOne = useRef()
   const [like, setLike] = useState(post.like);
   const [isLiked, setIsLiked] = useState(false);
@@ -16,8 +16,11 @@ export default function Post({fetchtimelinePosts, post }) {
     setLike(isLiked ? like - 1 : like + 1);
     setIsLiked(!isLiked);
   };
+ 
 
   const Allfollowingsdata = async () => {
+
+    
 
     if(post.length){
      try {
@@ -26,7 +29,7 @@ export default function Post({fetchtimelinePosts, post }) {
         const res = await axios.get(`api/users/getUser/${post[0].userid}`);
 
        if(res){
-        // console.log(res.data);
+        // console.log("from psot getuser",res.data);
          setFollowingPost(res.data)
         }
       }
@@ -35,6 +38,9 @@ export default function Post({fetchtimelinePosts, post }) {
      }
     }
   };
+
+
+
   
   useEffect(() => {
     Allfollowingsdata();
@@ -63,19 +69,19 @@ export default function Post({fetchtimelinePosts, post }) {
     
       {post &&
         post.map((post) => (
-          <div className="post">
+          <div className="post" key={post._id}>
             <div className="postWrapper">
               <div  className="postTop">
              
                 <div  className="postTopLeft">
    
-
-                  <Link to={`/profile?username=${followingPost&&followingPost.username}&_id=${followingPost&&followingPost._id}`}>
+                       
+                  <Link  to={`/profile?username=${followingPost&&followingPost.username}&_id=${followingPost&&followingPost._id}`}>
 
                   <div className=" flex flex-row align-center">
                   <img
                     className="postProfileImg"
-                      src={followingPost&&followingPost.profilePicture?(followingPost.profilePicture):(require('../../assets/white_profile_picture.png'))}
+                      src={followingPost&&followingPost.profilePicture.secure_url?(followingPost.profilePicture.secure_url):(require('../../assets/white_profile_picture.png'))}
                     alt=""
                   />
                   <span className="postUsername">
@@ -84,7 +90,7 @@ export default function Post({fetchtimelinePosts, post }) {
                   </div>
 
                   </Link>
-                  <span className="postDate">{post.createdAt.slice(11,19)} on {(post.createdAt.slice(0,10))}</span>
+                  <span  key={post._id} className="postDate">{post.createdAt.slice(11,19)} on {(post.createdAt.slice(0,10))}</span>
                 </div>
                 <div  className="postTopRight flex flex-col">
                  
@@ -99,8 +105,8 @@ export default function Post({fetchtimelinePosts, post }) {
               </div>
               <div className="postCenter">
              
-                <span className="postText">{post.description?(post.description):(" ")}</span>
-                <img className="postImg" src={post.img&&post.img.secure_url} alt="" />
+                <span  key={post._id} className="postText">{post.description?(post.description):(" ")}</span>
+                <img   className="postImg" src={post.img&&post.img.secure_url} alt="" />
               </div>
              
               <div className="postBottom">
@@ -113,12 +119,12 @@ export default function Post({fetchtimelinePosts, post }) {
                     alt=""
                   />
 
-                  <span className="postLikeCounter ">
+                  <span  key={post._id} className="postLikeCounter ">
                     {post.likes.length}
                   </span>
                 </div>
                 <div className="postBottomRight">
-                  <span className="postCommentText">
+                  <span  key={post._id} className="postCommentText">
                     {post.comment} comments
                   </span>
                 </div>

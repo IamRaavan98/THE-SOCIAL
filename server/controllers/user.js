@@ -2,6 +2,7 @@ require("dotenv").config;
 const bcrypt = require("bcrypt");
 const Usermodel = require("../models/Usermodel");
 const jwt = require("jsonwebtoken");
+const { findById } = require("../models/Usermodel");
 
 //register
 exports.register = async (req, res) => {
@@ -21,7 +22,7 @@ exports.register = async (req, res) => {
 
     //store data in DB
     const newUser = await new Usermodel({
-      username: req.body.username,
+      username: req.body.username.toLowerCase(),
       email: req.body.email,
       password: hashedPassword,
     });
@@ -164,7 +165,7 @@ exports.getUser = async (req, res) => {
 
 //follow
 // id in param is the user id which current user wants to follow
-exports.follow = async (req, res) => {
+exports.addFriend = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).send("user not found");
   } else{
@@ -175,9 +176,10 @@ exports.follow = async (req, res) => {
         return res.status(400).send("you cant follow yourself")
       }
      
-      if (!currentUser.followings.includes(user._id)) {
-        await currentUser.updateOne({ $push: { followings: user._id } });
-        await user.updateOne({ $push: { followers: currentUser._id } });
+      if (!currentUser.friends.includes(user._id)) {
+        await currentUser.updateOne({ $push: { friends: user._id } });
+        await user.updateOne({ $push: { friends: currentUser._id } });
+        
         res.status(200).json("user has been followed");
       } else {
         res.status(403).json("you already follow this user");
@@ -188,22 +190,109 @@ exports.follow = async (req, res) => {
   }
 };
 
-//unfollow
-exports.unfollow = async (req, res) => {
+// unfollow
+exports.unFriend = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).send("user not found");
   } else {
     try {
-      // const user = await Usermodel.findById(req.params.id);
-      if (req.user.followers.includes(req.params.id)) {
-        await user.updateOne({ $pull: { followers: req.user._id } });
-        await req.user.updateOne({ $pull: { followings: req.user._id } });
-        res.status(200).json("user has been unfollowed");
+      const user = await Usermodel.findById(req.params.id);
+      if(!user){
+        return res.status(404).send("the user trying to unfriend is not found`")
+      }
+      if (req.user.friends.includes(req.params.id)) {
+        await user.updateOne({ $pull: { friends: req.user._id } });
+        await req.user.updateOne({ $pull: { friends: user._id } });
+        res.status(200).json("user has been unfriend");
       } else {
-        res.status(403).json("you already unfollowed this user");
+        res.status(403).json("you already unfriend this user");
       }
     } catch (error) {
       res.status(500).send(error.message);
     }
   }
 };
+
+//here any user whose id is in parmas its friend list will be there
+exports.friendList = async(req,res)=>{
+    if(!req.params.id){
+     return res.status(404).send("provide user id in params")
+    }
+    const user = await Usermodel.findById(req.params.id)
+    if(!user){
+      return res.status(404).send("user not found");
+    }
+  try {
+    const friendList = await Promise.all(
+      user.friends.map((friendsId) => {
+        return Usermodel.findById(friendsId);
+      })
+      );
+      res.status(200).json(friendList);
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+}
+
+exports.userUpdate = async(req,res)=>{
+  const {city,relationship,from} = req.body
+
+  // console.log("user",user);
+  if(!city && !relationship && !from){
+    return res.status(404).send('No city,from,relationship, found')
+  }
+ try {
+   const user = await Usermodel.findById(req.user._id)
+
+  if(!user){
+    throw new Error("user not found")
+  }
+  if(city){
+      user.city = city;
+  }
+   if(relationship){
+    user.relationship = relationship;
+  }
+  if(from){
+    user.from = from
+  }
+  await user.save()
+  res.status(200).json({
+    success:true,
+    message:user
+  })
+ } catch (error) {
+   res.status(500).send(error.message) 
+ }
+}
+
+exports.AlluserList = async(req,res)=>{
+  try {
+    const user = await Usermodel.find();
+    if(!user){
+      return res.status(404).send("user not found")
+    }
+    else{
+      let userAllarray = []
+      for (let index = 0; index < user.length; index++) {
+        let temp = user[index].username.split('')
+        userAllarray.push({
+          username:temp,
+          id:user[index]._id,
+        })
+        
+      }
+      res.status(200).json({
+        success:true,
+        message:userAllarray
+      })
+  }
+  
+  } catch (error) {
+    res.status(500).json({
+      success:false,
+      message:error.message,
+    })
+  }
+
+}

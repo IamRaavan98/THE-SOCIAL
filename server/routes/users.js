@@ -6,9 +6,12 @@ const { register,
         updatePassword,
         deleteUser,
         getUser,
-        follow,
-        unfollow,
-        logout} = require("../controllers/user");
+        logout,
+        addFriend,
+        unFriend,
+        friendList,
+        userUpdate,
+        AlluserList} = require("../controllers/user");
 
 userRoutes.get("/",(req,res)=>{
     res.status(400).send("welcome to the user routes")
@@ -16,12 +19,15 @@ userRoutes.get("/",(req,res)=>{
 
 userRoutes.post("/register",register)
 userRoutes.post("/login",login)
+userRoutes.post("/userUpdate",checkLoginOrNot,userUpdate)
 userRoutes.get("/logout",logout)
 userRoutes.put("/updatePassword/:id",checkLoginOrNot,updatePassword);
 userRoutes.delete("/deleteUser/:id",checkLoginOrNot,deleteUser);
 userRoutes.get("/getUser/:id",checkLoginOrNot,getUser);
-userRoutes.put("/:id/follow",checkLoginOrNot,follow);
-userRoutes.put("/:id/unfollow",checkLoginOrNot,unfollow);
+userRoutes.put("/addFriend/:id",checkLoginOrNot,addFriend);
+userRoutes.put("/unFriend/:id",checkLoginOrNot,unFriend);
+userRoutes.get("/friendList/:id",checkLoginOrNot,friendList);
+userRoutes.get("/AlluserList",checkLoginOrNot,AlluserList);
 
 
 module.exports = userRoutes

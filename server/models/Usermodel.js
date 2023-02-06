@@ -21,18 +21,14 @@ const UserSchema = new mongoose.Schema(
       min: 6,
     },
     profilePicture: {
-      type: String,
-      default: "",
+      id:String,
+      secure_url:String,
     },
     coverPicture: {
-      type: String,
-      default: "",
+      id:String,
+      secure_url:String,
     },
-    followers: {
-      type: Array,
-      default: [],
-    },
-    followings: {
+    friends: {
       type: Array,
       default: [],
     },
@@ -47,14 +43,16 @@ const UserSchema = new mongoose.Schema(
     city: {
       type: String,
       max: 50,
+      default: ''
     },
     from: {
       type: String,
       max: 50,
+      default: ''
     },
     relationship: {
-      type: Number,
-      enum: [1, 2, 3],
+      type: String,
+      default: ''
     },
   },
   { timestamps: true }

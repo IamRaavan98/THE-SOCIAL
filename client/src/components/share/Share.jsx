@@ -8,6 +8,7 @@ import { CircularProgress } from "@mui/material";
 export default function Share() {
   let nextId = 0;
   const { data } = useContext(Authcontext);
+  
   const [images, setImages] = useState([]);
   const [imageUplaodStatus, setImageUploadStatus] = useState(0);
 
@@ -78,11 +79,11 @@ export default function Share() {
       <div className="share">
         <div className="shareWrapper">
           <div className="shareTop">
+          
             <img
               className="shareProfileImg"
-              src={
-                data.user && data.user.profilePicture
-                  ? data.user.profilePicture
+              src={data.user.profilePicture
+                  ? data.user.profilePicture.secure_url
                   : require("../../assets/white_profile_picture.png")
               }
               alt=""
