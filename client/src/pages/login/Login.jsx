@@ -36,7 +36,7 @@ const Login = () => {
         if (typeof res.data != "string" && res) {
           console.log("cookie set");
           setId(res.data.user._id);
-            setCookie("token",token,{path:'/',domain:'https://the-social-production-c585.up.railway.app'});
+            setCookie("token",token,{path:'/'});
           
           dispatch({
             data: res.data,
@@ -105,7 +105,7 @@ const Login = () => {
                 <input
                   id="password"
                   name="password"
-                  type="text"
+                  type="password"
                   autoComplete="current-password"
                   className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                   value={password}
