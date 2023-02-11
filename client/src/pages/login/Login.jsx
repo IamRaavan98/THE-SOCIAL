@@ -142,7 +142,7 @@ const Login = () => {
               >
                 {id != null ? (
                   // <Link to={`/home?_id=${id&&id}`}>Login</Link>
-                  <Navigate to={`/home?_id=${id && id}`} />
+                  <Navigate to={`/home?_id=${id?id:('')}`} />
                 ) : (
                   <p>LOGIN</p>
                 )}

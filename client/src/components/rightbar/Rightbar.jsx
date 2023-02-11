@@ -15,7 +15,7 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const username = searchParams.get("username");
-  const [followed,setFollowed] = useState(false)
+  const [followed,setFollowed] = useState()
   const _id = searchParams.get("_id");
 
   const loginuser = useContext(Authcontext);
@@ -24,7 +24,7 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
   const handleAddFri = async ()=>{
     try {
       const res = await axios.put(`api/users/addFriend/${_id}`)
-      console.log(res);
+    
       if(res){
        setFollowed(true);
       }
@@ -39,7 +39,7 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
  const handleUnFri =async ()=>{
    try {
      const res = await axios.put(`api/users/unFriend/${_id}`)
-     console.log(res);
+  
      if(res){
       setFollowed(false);
      }
@@ -59,8 +59,9 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
         setFriends(friendList.data);
         if(loginuser && loginuser.data.user._id !== _id){
           friendList.data.map((searchingForFriend)=>{
-            if(loginuser.data.user._id === searchingForFriend._id)setFollowed(true)
-            else setFollowed(false)
+           
+            if(loginuser.data.user._id === searchingForFriend._id){setFollowed(true); console.log("true");}
+            else {setFollowed(false); console.log("true")}
           })
           console.log("iam working");
 
@@ -257,11 +258,12 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
           {friends &&
             friends.map((friend) => (
               <Link
-                onClick={() => setUserInfo(friend)}
-                to={`/profile?username=${
-                  friend.username && friend.username
-                }&_id=${friend._id && friend._id}`}
+              onClick={() => setUserInfo(friend)}
+              to={`/profile?username=${
+                friend.username && friend.username
+              }&_id=${friend._id && friend._id}`}
               >
+               
                 {friend ? " " : <div>Why dont you search for SomeONE</div>}
                 <div className="rightbarFollowing">
                   <img key={friend&&friend._id}
@@ -289,6 +291,7 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
   return (
     <div className="rightbar">
       <div className="rightbarWrapper">
+        {loginuser && loginuser.data.user._id !== _id?(
           <div>
           { followed?(
          <button className="rightbarFollowButton" onClick={handleUnFri}>Unfriend</button> 
@@ -296,7 +299,9 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
             <button className="rightbarFollowButton" onClick={handleAddFri}>Add friend</button> 
           )}
           </div>
-        {loginuser && loginuser.data.user._id === _id ||followed ? <ProfileRightbar /> : <HomeRightbar />}
+
+        ):('')}
+        {loginuser && (loginuser.data.user._id === _id || followed ) ? <ProfileRightbar /> : <HomeRightbar />}
       </div>
     </div>
   );

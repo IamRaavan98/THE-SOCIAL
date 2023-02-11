@@ -37,14 +37,14 @@ export default function Profile() {
           <div className="profileRightTop">
             <div className="profileCover">
               
+              {/* {console.log(userinfo && userinfo.hasOwnProperty('coverPicture'))} */}
               <img
                 className="profileCoverImg"
                 src={
-                  userinfo
-                    ? userinfo.coverPicture.secure_url
+                  userinfo&&userinfo.hasOwnProperty('coverPicture')&&
+                  Object.keys(userinfo.coverPicture).length
                       ? userinfo.coverPicture.secure_url
-                      : userinfo.profilePicture.secure_url
-                    : " "
+                      :userinfo&&userinfo.hasOwnProperty('profilePicture')&& Object.keys(userinfo.profilePicture).length?userinfo.profilePicture.secure_url:('')
                 }
                 alt=""
               />
@@ -52,11 +52,10 @@ export default function Profile() {
               <img
                 className="profileUserImg"
                 src={
-                  userinfo
-                    ? userinfo.profilePicture.secure_url
+                  userinfo &&userinfo.hasOwnProperty('profilePicture')
+                    &&  Object.keys(userinfo.profilePicture).length
                       ? userinfo.profilePicture.secure_url
                       : require("../../assets/white_profile_picture.png")
-                    : require("../../assets/white_profile_picture.png")
                 }
                 alt=""
               />

@@ -1,9 +1,10 @@
 import { MoreVert } from "@mui/icons-material";
-import { useState,useEffect} from "react";
+import { useState,useEffect, useContext} from "react";
 import "./post.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
+import Authcontext from "../../context/Authcontext";
 
 
 
@@ -12,16 +13,26 @@ export default function Post({fetchtimelinePosts, post}) {
   const [like, setLike] = useState(post.like);
   const [isLiked, setIsLiked] = useState(false);
   const [followingPost, setFollowingPost] = useState()
-  const likeHandler = () => {
-    setLike(isLiked ? like - 1 : like + 1);
-    setIsLiked(!isLiked);
+
+  // like or dislike
+  const likeHandler =async (Post) => {   
+     try {
+      const res = await axios.put(`/api/posts/likePost/${Post._id}`)
+          if(res.data === "You have like the post"){
+               
+          }
+          else if(res.data === "You have unlike the post"){
+           
+          }      
+       fetchtimelinePosts();
+     } catch (error) {
+      console.log(error.message);
+      console.log(error.response.data);
+     }
   };
  
 
   const Allfollowingsdata = async () => {
-
-    
-
     if(post.length){
      try {
       if(post[0].userid){
@@ -39,8 +50,7 @@ export default function Post({fetchtimelinePosts, post}) {
     }
   };
 
-
-
+const {data} = useContext(Authcontext)
   
   useEffect(() => {
     Allfollowingsdata();
@@ -70,6 +80,7 @@ export default function Post({fetchtimelinePosts, post}) {
       {post &&
         post.map((post) => (
           <div className="post" key={post._id}>
+           
             <div className="postWrapper">
               <div  className="postTop">
              
@@ -94,12 +105,13 @@ export default function Post({fetchtimelinePosts, post}) {
                 </div>
                 <div  className="postTopRight flex flex-col">
                  
+                 {data?data.user._id === post.userid?(
                  <div  className="">
                   <button onClick={()=>handlePostDelete(post)}
                   className=" "
                   >Delete</button>
-                  
                   </div> 
+                 ):(''):('')}
               
                 </div>
               </div>
@@ -114,10 +126,11 @@ export default function Post({fetchtimelinePosts, post}) {
                   <img
                     className="likeIcon"
                     src={require("../../assets/like.png")}
-                    onClick={likeHandler}
+                    onClick={()=>likeHandler(post)}
                     width="25px"
                     alt=""
                   />
+              
 
                   <span  key={post._id} className="postLikeCounter ">
                     {post.likes.length}

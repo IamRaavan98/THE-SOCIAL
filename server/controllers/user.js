@@ -275,9 +275,9 @@ exports.AlluserList = async(req,res)=>{
     else{
       let userAllarray = []
       for (let index = 0; index < user.length; index++) {
-        let temp = user[index].username.split('')
+        
         userAllarray.push({
-          username:temp,
+          username:user[index].username,
           id:user[index]._id,
         })
         

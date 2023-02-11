@@ -20,7 +20,7 @@ export default function Topbar() {
   const { dispatch } = useContext(Authcontext);
  
   const [searchArray1,setSearchArray1] = useState([])
-  const [searchArray2,setSearchArray2] = useState([])
+  const [searchbarinput,setsearchBarInput] = useState([])
 
   const [imageUplaodLoading, setImageUploadloading] = useState(0);
   const [searchInput, setSearchInput] = useState([]);
@@ -29,7 +29,7 @@ export default function Topbar() {
   
   const handleLogout = async () => {
     try {
-      const res = await axios.get(`/api/users/logout`);
+      await axios.get(`/api/users/logout`);
     } catch (error) {
       console.log(error.message);
     }
@@ -86,8 +86,7 @@ export default function Topbar() {
    
     try {
       const res = await axios.get(`/api/users/AlluserList`);
-      console.log(res.data.message);
-      // setSearchArray1(res.data.message.map((r)=> console.log(r.username)))
+      
       setSearchArray1(res.data.message)
     } catch (error) {
       console.log(error.message);
@@ -95,20 +94,32 @@ export default function Topbar() {
   
 
  }
-
+// 
  const handleSearch = (e)=>{
   e.preventDefault()
-      
-    
+  setsearchBarInput(e.target.value)
+  if(e.target.value){
+    setSearchInput(searchArray1.filter((t)=>t.username.search(e.target.value) !== -1)) ;
+  }
+  else{
+    setSearchInput('')
+  }
+   
  }
 
+// select name from search bar
+const handleSearchbarName = (t)=>{
+    // const temp = searchArray2.map((p)=> console.log(JSON.stringify(p.username),t === p.username))
+    console.log(t);
+
+}
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
         <span className="logo">THE SOCIAL</span>
       </div>
       <div className="topbarCenter">
-        <div className="searchbar">
+        <div className="searchbar flex flex-col">
           <form onSubmit={handleSearch}>
 
           <label htmlFor="search">
@@ -117,14 +128,36 @@ export default function Topbar() {
             </button>
             <input
               type="text"
-              onChange = {(e)=>setSearchInput(e.target.value)}
+              value={searchbarinput}
+              onChange = {handleSearch}
               onClick = {handleFriendList}
               id="search"
               placeholder="Search for friend, post or video"
               className="searchInput"
               />
+      
           </label>
         </form>
+          <div className="bg-white w-full ">
+          <>
+          <div className="text-center cursor-pointer  flex flex-col text-lg font-semibold ">{searchInput && searchInput.map((t)=>
+           <>
+           {/* <h1 ref={input} onClick={()=>handleSearchbarName(t)} >{t.username}</h1> */}
+
+            <Link className="hover:bg-slate-500" onClick={()=>(setSearchInput(''),setsearchBarInput(''))}
+            to={`/profile?username=${
+              t.username && t.username
+            }&_id=${t.id && t.id}`}
+            >
+            {t.username}
+          </Link>
+            </>
+
+
+
+          )}</div>
+          </>
+        </div>
         </div>
       </div>
       <div className="flex flex-row topbarRight">
@@ -142,7 +175,7 @@ export default function Topbar() {
           </span>
 
           <span className="topbarLink">
-            <Link to="/home">Timeline</Link>
+            <Link to={`/home?_id=${userData._id?userData._id:('')}`}>Timeline</Link>
           </span>
         </div>
         <div className="topbarIcons">
