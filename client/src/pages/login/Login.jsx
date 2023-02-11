@@ -3,12 +3,13 @@ import { useState } from "react";
 import { NavLink, Link, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import Authcontext from "../../context/Authcontext";
+import { useCookies } from "react-cookie";
 
 //context api call
 
 const Login = () => {
   const { dispatch } = useContext(Authcontext);
-
+  const [cookie,setCookie] = useCookies(['token'])
   const [email, setEmail] = useState();
   const [id, setId] = useState();
   const [password, setPassword] = useState();
@@ -30,11 +31,13 @@ const Login = () => {
           email: email,
           password: password,
         });
-        // console.log(res);
-
+    
+         let token = res.data.token
         if (typeof res.data != "string" && res) {
+          console.log("cookie set");
           setId(res.data.user._id);
-
+            setCookie('token',token,{path:'/'});
+          
           dispatch({
             data: res.data,
           });

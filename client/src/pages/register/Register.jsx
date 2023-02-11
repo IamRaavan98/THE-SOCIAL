@@ -27,7 +27,7 @@ const SignUp = () => {
           email: email,
           password: password,
         });
-     
+       
         if (res.data.success) {
           setId(res.data.message._id);
           // window.alert("You are registerd plz login")
@@ -145,11 +145,7 @@ const SignUp = () => {
                 type="submit"
                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
-                {id != null ? (
-                  <Link to={`/`}>SignUP</Link>
-                ) : (
-                  <p>SignUp</p>
-                )}
+                SignUp 
               </button>
             </div>
           </form>
