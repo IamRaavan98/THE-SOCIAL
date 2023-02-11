@@ -36,7 +36,7 @@ const Login = () => {
         if (typeof res.data != "string" && res) {
           console.log("cookie set");
           setId(res.data.user._id);
-            setCookie("token",token,{path:'/',domain:REACT_APP_BACKEND_URL});
+            setCookie("token",token,{path:'/',domain:'https://the-social-production-c585.up.railway.app'});
           
           dispatch({
             data: res.data,
