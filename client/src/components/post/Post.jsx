@@ -64,7 +64,7 @@ const {data} = useContext(Authcontext)
       return 
     }
     const res = await axios.delete(`/api/posts/delete/${post._id}`)
-    console.log(res);
+
     fetchtimelinePosts()
     
     

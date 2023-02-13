@@ -28,10 +28,13 @@ export default function Share() {
           postwithDesc
         );
         setImageUploadStatus(0);
+        description.current.value = ''
+        console.log("dsadasdasdasdasdas",description.current.value);
       } catch (error) {
         console.log(error.message);
         window.alert("Post cant be uploaded");
         setImageUploadStatus(0);
+
       }
     }
 
@@ -47,22 +50,27 @@ export default function Share() {
             "content-type": "multipart/form-data",
           },
         });
-        console.log(res);
+     
         if (postwithDesc.desc && res.status === 200) {
           const imageID = res.data.product._id
-          console.log(imageID);
+
           postwithDesc.imageID = imageID
           const res2 = await axios.post(
             `/api/posts/descriptionPost`,
             postwithDesc
             );
-            console.log(res2);
+          
+            if(res2){
+              description.current.value = ''
+            }
           }
           setImageUploadStatus(0);
+          console.log(description);
       } catch (error) {
         console.log(error.message);
         if (error.message) {
           setImageUploadStatus(0);
+         
           window.alert("image cant be uploaded");
         }
       }
