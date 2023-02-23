@@ -9,6 +9,7 @@ import UserContext from "./context/UserContext";
 function App() {
   return (
     <Router>
+      
      <UserContext>
 
         <Routes>

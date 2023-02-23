@@ -64,11 +64,12 @@ exports.login = async (req, res) => {
         user.password = undefined
         user.token = token
 
-        const options = {
+      const options = {
+          domain:process.env.REACT_APP_URL,
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
             httpOnly: true
         }
-      return res.status(200).json({
+      return res.status(200).cookie("token", token, options).json({
             success: true,
             token,
             user
