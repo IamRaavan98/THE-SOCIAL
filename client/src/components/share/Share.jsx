@@ -132,7 +132,8 @@ export default function Share() {
                 <span className="shareOptionText">Feelings</span>
               </div>
             </div>
-            <button type="submit" className="shareButton">
+
+            <button style={{backgroundColor:"green"}} type="submit" className="shareButton">
               {imageUplaodStatus ? <CircularProgress /> : "Share"}
             </button>
           </div>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Share from "../share/Share";
 import Post from "../post/Post";
 import "./feed.css";
+import Authcontext from "../../context/Authcontext";
 
 
 export default function Feed({ username, _id }) {
@@ -10,6 +11,8 @@ export default function Feed({ username, _id }) {
   // console.log("username",username);
   const [posts, setPosts] = useState([]);
   const [postsforProfile, setPostsForProfile] = useState([]);
+  const { data } = useContext(Authcontext);
+
 
   useEffect(() => {
     fetchtimelinePosts();
@@ -24,7 +27,7 @@ export default function Feed({ username, _id }) {
       if (!username) {
         const res = await axios.get(`/api/posts/timelinePosts`);
         // console.log(res);
-        // console.log(res);
+     
         setPosts(res.data);
         setPosts(
           res.data.sort((p1, p2) => {

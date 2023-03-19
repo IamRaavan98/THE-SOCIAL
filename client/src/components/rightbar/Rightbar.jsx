@@ -15,7 +15,7 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const username = searchParams.get("username");
-  const [followed,setFollowed] = useState()
+  const [followed,setFollowed] = useState(false)
   const _id = searchParams.get("_id");
 
   const loginuser = useContext(Authcontext);
@@ -24,14 +24,16 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
   const handleAddFri = async ()=>{
     try {
       const res = await axios.put(`api/users/addFriend/${_id}`)
-    
+      
       if(res){
        setFollowed(true);
       }
     } catch (error) {
      console.log(error.message);
      console.log(error.response.data);
-     
+      if(error?.response?.data === ("you already follow this user")){
+        setFollowed(true);
+      }
     }
 
  }
@@ -46,6 +48,7 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
    } catch (error) {
     console.log(error.message);
     console.log(error.response.data);
+    
    }
  }
  
@@ -60,10 +63,10 @@ export default function Rightbar({ setUserInfo, userinfo,getuserinfo }) {
         if(loginuser && loginuser.data.user._id !== _id){
           friendList.data.map((searchingForFriend)=>{
            
-            if(loginuser.data.user._id === searchingForFriend._id){setFollowed(true); console.log("true");}
-            else {setFollowed(false); console.log("true")}
+            if(loginuser.data.user._id === searchingForFriend._id){setFollowed(true);}
+            else {setFollowed(false); }
           })
-          console.log("iam working");
+
 
         }
       }

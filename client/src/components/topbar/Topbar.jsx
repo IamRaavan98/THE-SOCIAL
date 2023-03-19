@@ -199,8 +199,8 @@ const handleSearchbarName = (t)=>{
           ) : (
             <img
               src={
-                userData.profilePicture.secure_url
-                  ? userData.profilePicture.secure_url
+                userData?.profilePicture?.secure_url
+                  ? userData?.profilePicture?.secure_url
                   : require("../../assets/white_profile_picture.png")
               }
               alt=""
