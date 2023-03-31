@@ -106,7 +106,7 @@ export default function Share() {
           </div>
 
           <hr className="shareHr" />
-          <div className="shareBottom">
+          <div  className="shareBottom">
             <div className="shareOptions">
               <label htmlFor="file" className="shareOption">
                 <PermMedia htmlColor="tomato" className="shareIcon" />
@@ -123,7 +123,7 @@ export default function Share() {
                 <Label htmlColor="blue" className="shareIcon" />
                 <span className="shareOptionText">Tag</span>
               </div>
-              <div className="shareOption">
+              <div  className="shareOption">
                 <Room htmlColor="green" className="shareIcon" />
                 <span className="shareOptionText">Location</span>
               </div>

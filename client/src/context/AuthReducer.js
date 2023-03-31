@@ -12,7 +12,6 @@ export default AuthReducer
 //      case "newData":
 //      return{
 //          data:action.data,
- 
 //      }
             
     
