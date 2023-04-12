@@ -49,10 +49,10 @@ app.use(
   );
 
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin:process.env.REACT_APP_FRONTEND_URL,
-    credentials: true,
-}));
+// app.use(cors({
+//     origin:process.env.REACT_APP_FRONTEND_URL,
+//     credentials: true,
+// }));
 
 //this is giving error after build as localhost:4000/ is should be login accroding to frontened but it stucking here
 // app.get("/",(req,res)=>{
