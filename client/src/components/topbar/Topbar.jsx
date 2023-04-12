@@ -30,7 +30,7 @@ export default function Topbar() {
     try {
       await axios.get(`/api/users/logout`);
     } catch (error) {
-      console.log(error.message);
+      console.log(error?.message);
     }
   };
 
@@ -61,7 +61,7 @@ export default function Topbar() {
         if (res.status === 200) {
           setImageUploadloading(0);
 
-          setUserData(res.data.user);
+          setUserData(res?.data?.user);
           // as we are fetching data from context api and there it store its data in local host so we need to update it manually or it will update as on login
           dispatch({
             data: res.data,
@@ -69,7 +69,7 @@ export default function Topbar() {
         }
       } catch (error) {
         setImageUploadloading(0);
-        console.log(error.message);
+        console.log(error?.message);
         console.log(error);
       }
     } else {
@@ -85,7 +85,7 @@ export default function Topbar() {
 
       setSearchArray1(res.data.message);
     } catch (error) {
-      console.log(error.message);
+      console.log(error?.message);
     }
   };
   //

@@ -31,7 +31,7 @@ export default function Share() {
         description.current.value = ''
         console.log("dsadasdasdasdasdas",description.current.value);
       } catch (error) {
-        console.log(error.message);
+        console.log(error?.message);
         window.alert("Post cant be uploaded");
         setImageUploadStatus(0);
 
@@ -67,8 +67,8 @@ export default function Share() {
           setImageUploadStatus(0);
           console.log(description);
       } catch (error) {
-        console.log(error.message);
-        if (error.message) {
+        console.log(error?.message);
+        if (error?.message) {
           setImageUploadStatus(0);
          
           window.alert("image cant be uploaded");

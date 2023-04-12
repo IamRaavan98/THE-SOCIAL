@@ -26,8 +26,8 @@ export default function Post({fetchtimelinePosts, post}) {
           }      
        fetchtimelinePosts();
      } catch (error) {
-      console.log(error.message);
-      console.log(error.response.data);
+      console.log(error?.message);
+      console.log(error?.response?.data);
      }
   };
  
@@ -45,7 +45,7 @@ export default function Post({fetchtimelinePosts, post}) {
         }
       }
       } catch (error) {
-      console.log(error.message)
+      console.log(error?.message)
      }
     }
   };
@@ -69,7 +69,7 @@ const {data} = useContext(Authcontext)
     
     
   } catch (error) {
-    console.log(error.message);
+    console.log(error?.message);
   }
   }
 

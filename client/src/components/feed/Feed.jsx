@@ -55,8 +55,8 @@ export default function Feed({ username, _id }) {
         }
       }
     } catch (error) {
-       console.log(error.message);
-       console.log(error.response.data);
+       console.log(error?.message);
+       console.log(error?.response?.data);
       
     
     }
