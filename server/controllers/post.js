@@ -231,6 +231,7 @@ exports.getPost = async (req, res) => {
   try {
     const post = await Postmodel.findById(req.params.id);
     if (post) {
+      console.log("postsfsdfsdfsdfsdfsdfsdf",post);
       return res.status(200).json({
         success: true,
         message: post,

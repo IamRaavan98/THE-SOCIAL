@@ -18,15 +18,14 @@ export default function Topbar() {
   const [userData, setUserData] = useState(useContext(Authcontext).data.user);
 
   const { dispatch } = useContext(Authcontext);
- 
-  const [searchArray1,setSearchArray1] = useState([])
-  const [searchbarinput,setsearchBarInput] = useState([])
+
+  const [searchArray1, setSearchArray1] = useState([]);
+  const [searchbarinput, setsearchBarInput] = useState([]);
 
   const [imageUplaodLoading, setImageUploadloading] = useState(0);
   const [searchInput, setSearchInput] = useState([]);
   const [profilebar, setProfileBar] = useState("none");
 
-  
   const handleLogout = async () => {
     try {
       await axios.get(`/api/users/logout`);
@@ -43,9 +42,7 @@ export default function Topbar() {
     }
   };
 
-  useEffect(()=>{
-
-  })
+  useEffect(() => {});
 
   // uplaod a picture
   const handleProfilePictureUpload = async (e) => {
@@ -83,36 +80,32 @@ export default function Topbar() {
 
   // all user name list
   const handleFriendList = async () => {
-   
     try {
       const res = await axios.get(`/api/users/AlluserList`);
-      
-      setSearchArray1(res.data.message)
+
+      setSearchArray1(res.data.message);
     } catch (error) {
       console.log(error.message);
     }
-  
+  };
+  //
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setsearchBarInput(e.target.value);
+    if (e.target.value) {
+      setSearchInput(
+        searchArray1.filter((t) => t.username.search(e.target.value) !== -1)
+      );
+    } else {
+      setSearchInput("");
+    }
+  };
 
- }
-// 
- const handleSearch = (e)=>{
-  e.preventDefault()
-  setsearchBarInput(e.target.value)
-  if(e.target.value){
-    setSearchInput(searchArray1.filter((t)=>t.username.search(e.target.value) !== -1)) ;
-  }
-  else{
-    setSearchInput('')
-  }
-   
- }
-
-// select name from search bar
-const handleSearchbarName = (t)=>{
+  // select name from search bar
+  const handleSearchbarName = (t) => {
     // const temp = searchArray2.map((p)=> console.log(JSON.stringify(p.username),t === p.username))
     console.log(t);
-
-}
+  };
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
@@ -121,43 +114,45 @@ const handleSearchbarName = (t)=>{
       <div className="topbarCenter">
         <div className="searchbar flex flex-col">
           <form onSubmit={handleSearch}>
-
-          <label htmlFor="search">
-            <button id="search" type="submit">
-            <Search  className="searchIcon" />
-            </button>
-            <input
-              type="text"
-              value={searchbarinput}
-              onChange = {handleSearch}
-              onClick = {handleFriendList}
-              id="search"
-              placeholder="Search for friend, post or video"
-              className="searchInput"
+            <label htmlFor="search">
+              <button id="search" type="submit">
+                <Search className="searchIcon" />
+              </button>
+              <input
+                type="text"
+                value={searchbarinput}
+                onChange={handleSearch}
+                onClick={handleFriendList}
+                id="search"
+                placeholder="Search for friend, post or video"
+                className="searchInput"
               />
-      
-          </label>
-        </form>
+            </label>
+          </form>
           <div className="bg-white w-full ">
-          <>
-          <div className="text-center cursor-pointer  flex flex-col text-lg font-semibold ">{searchInput && searchInput.map((t)=>
-           <>
-           {/* <h1 ref={input} onClick={()=>handleSearchbarName(t)} >{t.username}</h1> */}
+            <>
+              <div className="text-center cursor-pointer  flex flex-col text-lg font-semibold ">
+                {searchInput &&
+                  searchInput.map((t) => (
+                    <>
+                      {/* <h1 ref={input} onClick={()=>handleSearchbarName(t)} >{t.username}</h1> */}
 
-            <Link className="hover:bg-slate-500" onClick={()=>(setSearchInput(''),setsearchBarInput(''))}
-            to={`/profile?username=${
-              t.username && t.username
-            }&_id=${t.id && t.id}`}
-            >
-            {t.username}
-          </Link>
+                      <Link
+                        className="hover:bg-slate-500"
+                        onClick={() => (
+                          setSearchInput(""), setsearchBarInput("")
+                        )}
+                        to={`/profile?username=${
+                          t.username && t.username
+                        }&_id=${t.id && t.id}`}
+                      >
+                        {t.username}
+                      </Link>
+                    </>
+                  ))}
+              </div>
             </>
-
-
-
-          )}</div>
-          </>
-        </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-row topbarRight">
@@ -175,7 +170,9 @@ const handleSearchbarName = (t)=>{
           </span>
 
           <span className="topbarLink">
-            <Link to={`/home?_id=${userData._id?userData._id:('')}`}>Timeline</Link>
+            <Link to={`/home?_id=${userData._id ? userData._id : ""}`}>
+              Timeline
+            </Link>
           </span>
         </div>
         <div className="topbarIcons">
@@ -183,10 +180,14 @@ const handleSearchbarName = (t)=>{
             <Person />
             <span className="topbarIconBadge">1</span>
           </div>
-          <div className="topbarIconItem">
-            <Chat />
-            <span className="topbarIconBadge">2</span>
-          </div>
+
+          <Link to="/messenger">
+            <div className="topbarIconItem">
+              <Chat />
+              <span className="topbarIconBadge">2</span>
+            </div>
+
+          </Link>
           <div className="topbarIconItem">
             <Notifications />
             <span className="topbarIconBadge">1</span>

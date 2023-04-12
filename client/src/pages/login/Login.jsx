@@ -41,7 +41,7 @@ const Login = () => {
           dispatch({
             data: res.data,
           });
-          console.log(res.data);
+        
         } else {
           setWarning(res.data);
           setEmail("");

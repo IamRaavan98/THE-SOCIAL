@@ -5,7 +5,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 import Authcontext from "../../context/Authcontext";
-
+import {Image} from 'cloudinary-react';
 
 
 export default function Post({fetchtimelinePosts, post}) {
@@ -118,7 +118,8 @@ const {data} = useContext(Authcontext)
               <div className="postCenter">
              
                 <span  key={post._id} className="postText">{post.description?(post.description):(" ")}</span>
-                <img   className="postImg" src={post.img&&post.img.secure_url} alt="" />
+              
+                <Image cloudName="your_cloud_name" className="postImg" publicId={post.img&&post.img.secure_url} alt="" />
               </div>
              
               <div className="postBottom">
@@ -131,10 +132,11 @@ const {data} = useContext(Authcontext)
                     alt=""
                   />
               
-
+                    
                   <span  key={post._id} className="postLikeCounter ">
                     {post.likes.length}
                   </span>
+
                 </div>
                 <div className="postBottomRight">
                   <span  key={post._id} className="postCommentText">

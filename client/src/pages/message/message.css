@@ -1,0 +1,60 @@
+.message{
+    position: absolute;
+    bottom: 0px;
+    width: 44vw;
+    flex-direction: column;
+}
+.messageTop{
+    align-items: center;
+    display: flex;
+    width: 46vw;
+    margin-left:10px;
+    margin-bottom: 10px;
+}
+
+.messageText{
+    background-color: #1877f2;
+    border-radius: 20px;
+    color: #fff;
+    padding: 10px;
+}
+
+
+.messageTop>p{
+  margin-left: 10px;
+}
+.messageBottom>p{
+  margin-right: 10px;
+}
+.messageBottom{
+    align-items: center;
+    display: flex;
+    flex-direction: row-reverse;
+    width: 46vw;
+}
+
+.messageImg{
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+
+}
+.form{
+    width: 46vw;
+    display: flex;
+}
+.input{
+    flex: 1;
+    border: solid red 4px;
+}
+
+.submitButton{
+    border: solid blue 4px;
+    padding: 10px 50px;
+}
+.submitButton:hover{
+    background-color: blue;
+    color: #fff;
+}
