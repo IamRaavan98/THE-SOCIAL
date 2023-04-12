@@ -51,7 +51,7 @@ const Login = () => {
         setEmail("");
         setPassword("");
         console.log(error.message);
-        console.log(error.response.data && error.response.data);
+
         if (error.response.data)
           setWarning("You are not registered Please register");
       }
